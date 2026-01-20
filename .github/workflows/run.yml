@@ -1,0 +1,24 @@
+name: Get SCFI Data Now
+on:
+  workflow_dispatch: # 수동 실행 버튼을 만듭니다.
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Python 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: 라이브러리 설치
+        run: pip install requests beautifulsoup4 pandas
+      - name: 스크립트 실행
+        run: python scraper.py
+      - name: 결과 저장(Commit)
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add scfi_data.csv
+          git commit -m "SCFI 데이터 업데이트" || exit 0
+          git push
